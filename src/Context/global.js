@@ -9,7 +9,8 @@ const ACTIONS = {
     SEARCH : "SEARCH",
     GET_POPULAR_ANIMES : "GET_POPULAR_ANIMES",
     GET_UPCOMING_ANIMES : "GET_UPCOMING_ANIMES",
-    GET_AIRING_ANIMES : "GET_AIRING_ANIMES"
+    GET_AIRING_ANIMES : "GET_AIRING_ANIMES",
+    GET_SEARCH_RESULTS: "GET_SEARCH_RESULTS"
 }
 
 const reducer = (state, action) => {
@@ -22,6 +23,10 @@ const reducer = (state, action) => {
             return {...state, airingAnimes: action.payload, loading: false}
         case ACTIONS.GET_UPCOMING_ANIMES:
             return {...state, upcomingAnimes: action.payload, loading: false};
+        case ACTIONS.GET_SEARCH_RESULTS:
+            return { ...state, searchResult: action.payload, isSearching: true, loading: false };
+        case ACTIONS.SEARCH:
+            return { ...state, isSearching: action.payload };
         default:
             return state;
     }
@@ -55,18 +60,28 @@ export const GlobalContextProvider = ({children}) => {
     }
 
     const getUpcomingrAnimes = async () => {
+        console.log('hahaha')
         dispatch({type: ACTIONS.LOADING});
         const response = await fetch(`${baseUrl}/top/anime?filter=upcoming`);
         const upcomingAnimes = await response.json();
+        console.log(upcomingAnimes)
         dispatch({type: ACTIONS.GET_UPCOMING_ANIMES, payload: upcomingAnimes.data});
     }
+
+    const searchAnime = async (query, navigate) => {
+        dispatch({ type: ACTIONS.LOADING });
+        const response = await fetch(`${baseUrl}/anime?q=${query}&limit=10`);
+        const searchResult = await response.json();
+        const anime = searchResult.data[0]; // Récupère le premier résultat
+        navigate(`/anime/${anime.mal_id}`);
+    };
 
     React.useEffect(() => {
         getPopularAnimes();
     }, [])
 
     return (
-        <GlobalContext.Provider value={{...state, getPopularAnimes, getAiringAnimes, getUpcomingrAnimes}}> 
+        <GlobalContext.Provider value={{...state, getPopularAnimes, getAiringAnimes, getUpcomingrAnimes, searchAnime}}> 
             {children}
         </GlobalContext.Provider>
     )

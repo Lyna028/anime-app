@@ -135,6 +135,7 @@ code {
 }
 
 .animeInfos {
+  width: 70vw;
   margin: 20px;
   margin-left: 30px;
   padding : 20px;

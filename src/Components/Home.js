@@ -4,10 +4,18 @@ import Popular from "./Popular";
 import Airing from "./Airing";
 import Upcoming from "./Upcoming";
 import { useGlobalContext } from "../Context/global";
+import { useNavigate } from "react-router-dom";
 
 export default function Home () {
 
     const [rendered, setRendered] = useState("popular");
+    const { searchAnime, isSearching } = useGlobalContext();
+    const [query, setQuery] = useState("");
+    const navigate = useNavigate();
+
+    const handleSearch = (e) => {
+        searchAnime(query, navigate); 
+    };
 
     const switchComponent = () => {
         switch (rendered) {
@@ -31,9 +39,9 @@ export default function Home () {
                 </button>
             
                 <div className="searchContainer">
-                    <form className="searchForm">
-                        <input className="searchInput"></input>
-                        <button className="searchBtn btn">Search</button>
+                    <form className="searchForm" onSubmit={handleSearch}>
+                        <input className="searchInput" value={query} onChange={(e) => setQuery(e.target.value)}></input>
+                        <button className="searchBtn btn" type="submit">Search</button>
                     </form>
                 </div>
 

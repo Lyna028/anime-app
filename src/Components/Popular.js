@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 export default function Popular() {
     const { popularAnimes, isSearching } = useGlobalContext();
 
+
     const initialRender = () => {
         if (!isSearching) {
             return popularAnimes?.map((anime) => {
